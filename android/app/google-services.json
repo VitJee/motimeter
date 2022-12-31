@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "122791870175",
+    "project_id": "motimeter-98640",
+    "storage_bucket": "motimeter-98640.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:122791870175:android:939fafd883c886925e736a",
+        "android_client_info": {
+          "package_name": "ch.bbbaden.motimeter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "122791870175-37rcjidtp5ftatcmlch8kdqe946caa3p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ch.bbbaden.motimeter",
+            "certificate_hash": "99a5dc1dec24a89c0a4cf18ad7b31c7e0cf3a7af"
+          }
+        },
+        {
+          "client_id": "122791870175-m78aegs8gpailv5rsvtnaetk1v9p5f3a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDHstdZ4lJ7db9i8ATZA_e9sE0z623Cw8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "122791870175-m78aegs8gpailv5rsvtnaetk1v9p5f3a.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "122791870175-6hv6rpb0efdg2ddohetevpe9tj5g7j5r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ch.bbbaden.motimeter"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
