@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:motimeter/allevents.dart';
+import 'package:motimeter/signin.dart';
 import 'package:motimeter/signup.dart';
 
 class Redirects {
@@ -11,9 +13,21 @@ class Redirects {
         }));
   }*/
 
+  static void signIn(context) {
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) {
+      return SignIn();
+    }));
+  }
+
   static void signUp(context) {
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) {
       return SignUp();
+    }));
+  }
+
+  static void allEvents(context) {
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) {
+      return AllEvents();
     }));
   }
 }

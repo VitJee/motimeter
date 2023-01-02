@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:motimeter/allevents.dart';
 import 'package:motimeter/redirects.dart';
+import 'package:motimeter/usercontroller.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -11,11 +12,11 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MaterialApp(home: MyApp()));
+  runApp(MaterialApp(home: SignIn(), debugShowCheckedModeBanner: false));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class SignIn extends StatelessWidget {
+  SignIn({super.key});
 
   @override
   Widget build(BuildContext context) =>
@@ -26,54 +27,46 @@ class MyApp extends StatelessWidget {
             if (snapshot.hasData) {
               return AllEvents();
             } else {
-              return MyHomePage();
+              return SignInPage();
             }
           },
         ),
       );
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+class SignInPage extends StatefulWidget {
+  SignInPage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<SignInPage> createState() => SignInPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class SignInPageState extends State<SignInPage> {
   final double paddingLeft = 50;
   final double paddingRight = 50;
   final double paddingTop = 50;
   final double paddingBottom = 10;
+  static String message = "";
+  static Color messageColor = Colors.red;
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
-
-  signIn() async {
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailController.text.trim(),
-          password: passController.text.trim()
-      );
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  signUp() {
-    Redirects.signUp(context);
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Motimeter"),
+        centerTitle: true,
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
+            Padding(
+              padding: EdgeInsets.fromLTRB(paddingLeft, paddingTop, paddingRight, paddingBottom),
+              child: const Text("Login", style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+            ),
             Padding(
               padding: EdgeInsets.fromLTRB(paddingLeft, paddingTop, paddingRight, paddingBottom),
               child: TextField(
@@ -103,17 +96,27 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ElevatedButton(
-                      onPressed: signIn,
-                      child: const Text("Sign in")
+                  Padding(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          await UserController.signIn(emailController.text, passController.text);
+                          setState(() {});
+                        },
+                        child: const Text("Sign-in"),
+                      ),
                   ),
                   ElevatedButton(
-                      onPressed: signUp,
-                      child: const Text("Sign up")
+                      onPressed: () {
+                        Redirects.signUp(context);
+                        message = "";
+                      },
+                      child: const Text("Sign-up")
                   )
                 ],
               )
             ),
+            Text(message, style: TextStyle(color: messageColor)),
           ],
         ),
       ),
