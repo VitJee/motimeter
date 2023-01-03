@@ -73,96 +73,99 @@ class CreateEventState extends State<CreateEvent> {
         title: const Text("Motimeter - Create Group"),
         centerTitle: true,
       ),
-      body: Center(
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.fromLTRB(paddingLeft, paddingTop, paddingRight, paddingBottom),
-              child: image != null ? Image.file(image!) : FlutterLogo(size: 160),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(0, paddingTop, 2.5, paddingBottom),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      CreateEventController.searchImage();
-                      setState(() {});
-                    },
-                    child: const Text("Search Image"),
+      body: SingleChildScrollView(
+        reverse: true,
+        child: Center(
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(paddingLeft, paddingTop, paddingRight, paddingBottom),
+                child: image != null ? Image.file(image!, height: 160, width: 160) : FlutterLogo(size: 160),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0, paddingTop, 2.5, paddingBottom),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        await CreateEventController.searchImage();
+                        setState(() {});
+                      },
+                      child: const Text("Search Image"),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(2.5, paddingTop, 0, paddingBottom),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        await CreateEventController.takeImage();
+                        setState(() {});
+                      },
+                      child: const Text("Take Image"),
+                    ),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(paddingLeft, paddingTop, paddingRight, 5),
+                child: TextField(
+                  controller: eventName,
+                  decoration: const InputDecoration(
+                      labelText: "Event name",
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 3, color: Colors.blue)
+                      )
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(2.5, paddingTop, 0, paddingBottom),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      CreateEventController.takeImage();
-                      setState(() {});
-                    },
-                    child: const Text("Take Image"),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(paddingLeft, 5, paddingRight, 5),
+                child: TextField(
+                  controller: eventPassword,
+                  decoration: const InputDecoration(
+                      labelText: "Event Password",
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 3, color: Colors.blue)
+                      )
                   ),
                 ),
-              ],
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(paddingLeft, paddingTop, paddingRight, 5),
-              child: TextField(
-                controller: eventName,
-                decoration: const InputDecoration(
-                  labelText: "Event name",
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(width: 3, color: Colors.blue)
-                  )
-                ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(paddingLeft, 5, paddingRight, 5),
-              child: TextField(
-                controller: eventPassword,
-                decoration: const InputDecoration(
-                    labelText: "Event Password",
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(width: 3, color: Colors.blue)
-                    )
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: paddingLeft),
+                    child: Text("Start:"),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      await CreateEventController.pickDateTime(context, startDateTime, true);
+                      setState(() {});
+                    },
+                    child: Text("$startDays/$startMonths/$startYears $startHours:$startMinutes"),
+                  ),
+                ],
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: paddingLeft),
-                  child: Text("Start:"),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    await CreateEventController.pickDateTime(context, startDateTime, true);
-                    setState(() {});
-                  },
-                  child: Text("$startDays/$startMonths/$startYears $startHours:$startMinutes"),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: paddingLeft),
-                  child: Text("End:")
-                ),
-                TextButton(
-                  onPressed: () async {
-                    await CreateEventController.pickDateTime(context, endDateTime, false);
-                    setState(() {});
-                  },
-                  child: Text("$endDays/$endMonths/$endYears $endHours:$endMinutes"),
-                ),
-              ],
-            ),
-            Text(message, style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold))
-          ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                      padding: EdgeInsets.only(left: paddingLeft),
+                      child: Text("End:")
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      await CreateEventController.pickDateTime(context, endDateTime, false);
+                      setState(() {});
+                    },
+                    child: Text("$endDays/$endMonths/$endYears $endHours:$endMinutes"),
+                  ),
+                ],
+              ),
+              Text(message, style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold))
+            ],
+          ),
         ),
       )
     );

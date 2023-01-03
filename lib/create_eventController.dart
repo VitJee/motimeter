@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -71,15 +72,31 @@ class CreateEventController {
         "name": eventName,
         "password": eventPassword,
         "start": eventStart,
-        "end": eventEnd
+        "end": eventEnd,
+        "imgid": createImgId()
       });
+      uploadFile();
       Redirects.allEvents(context);
     } on FirebaseAuthException catch (e) {
       print(e.message.toString());
     }
   }
 
-  static Future searchImage() async {
+  static createImgId() {
+    return 1;
+  }
+
+  static uploadFile() async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    if (CreateEventState.image == null) return;
+    try {
+      await storage.ref("pictures/bruh").putFile(CreateEventState.image!);
+    } on FirebaseException catch (e) {
+      print(e.message.toString());
+    }
+  }
+
+  static searchImage() async {
     try {
       final img = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (img == null) return;
@@ -89,7 +106,13 @@ class CreateEventController {
     }
   }
 
-  static Future takeImage() async {
-    await ImagePicker().pickImage(source: ImageSource.camera);
+  static takeImage() async {
+    try {
+      final img = await ImagePicker().pickImage(source: ImageSource.camera);
+      if (img == null) return;
+      CreateEventState.image = File(img.path);
+    } on PlatformException catch (e) {
+      print(e.message.toString());
+    }
   }
 }
