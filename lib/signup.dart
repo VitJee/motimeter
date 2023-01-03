@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:motimeter/redirects.dart';
-import 'package:motimeter/usercontroller.dart';
+import 'package:motimeter/userController.dart';
 
 class SignUp extends StatefulWidget {
   @override

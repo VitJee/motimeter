@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:motimeter/usercontroller.dart';
+import 'package:motimeter/redirects.dart';
+import 'package:motimeter/userController.dart';
 
 class AllEvents extends StatefulWidget {
   const AllEvents({super.key});
@@ -10,6 +11,10 @@ class AllEvents extends StatefulWidget {
 }
 
 class AllEventsState extends State<AllEvents> {
+  final double paddingLeft = 50;
+  final double paddingRight = 50;
+  final double paddingTop = 50;
+  final double paddingBottom = 10;
 
   onSelected(BuildContext context, int item) {
     switch (item) {
@@ -22,6 +27,12 @@ class AllEventsState extends State<AllEvents> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Redirects.createEvent(context);
+        },
+        child: const Icon(Icons.add),
+      ),
       appBar: AppBar(
           title: const Text("Motimeter - All Events"),
           centerTitle: true,

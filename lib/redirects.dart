@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:motimeter/allevents.dart';
+import 'package:motimeter/create_event.dart';
 import 'package:motimeter/signin.dart';
 import 'package:motimeter/signup.dart';
 
@@ -28,6 +29,12 @@ class Redirects {
   static void allEvents(context) {
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) {
       return AllEvents();
+    }));
+  }
+
+  static void createEvent(context) {
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) {
+      return CreateEvent();
     }));
   }
 }
