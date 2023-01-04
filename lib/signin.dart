@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:motimeter/allevents.dart';
 import 'package:motimeter/redirects.dart';
 import 'package:motimeter/userController.dart';
@@ -56,7 +55,7 @@ class SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Motimeter"),
+        title: const Text("Motimeter"),
         centerTitle: true,
       ),
       body: Center(

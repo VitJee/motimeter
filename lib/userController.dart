@@ -1,6 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:motimeter/redirects.dart';
 import 'package:motimeter/signin.dart';
@@ -26,13 +24,6 @@ class UserController {
           email: email.trim(),
           password: password
       );
-      DatabaseReference dbUsers = FirebaseDatabase.instanceFor(
-          app: Firebase.app(),
-          databaseURL: "https://motimeter-98640-default-rtdb.europe-west1.firebasedatabase.app/"
-      ).ref("users").push();
-      dbUsers.set({
-        "email": email
-      });
       Redirects.allEvents(context);
       SignUpState.message = "";
     } on FirebaseAuthException catch (e) {

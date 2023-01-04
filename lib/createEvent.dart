@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:motimeter/create_eventController.dart';
+import 'package:motimeter/createEventController.dart';
 import 'package:motimeter/redirects.dart';
 
 class CreateEvent extends StatefulWidget {
@@ -16,13 +16,23 @@ class CreateEventState extends State<CreateEvent> {
   final double paddingRight = 50;
   final double paddingTop = 50;
   final double paddingBottom = 10;
-  static DateTime startDateTime = DateTime(2022, 2, 3, 15, 45);
-  static DateTime endDateTime = DateTime(2022, 3, 15, 15, 45);
-  String message = "";
+  static DateTime startDateTime = DateTime.now();
+  static DateTime endDateTime = DateTime.now();
+  static String message = "";
   static File? image;
 
   TextEditingController eventName = TextEditingController();
   TextEditingController eventPassword = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    printImgId();
+  }
+
+  printImgId() async {
+    print(await CreateEventController.createImgId());
+  }
 
   @override
   Widget build(BuildContext context) {
