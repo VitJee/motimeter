@@ -133,6 +133,7 @@ class CreateEventState extends State<CreateEvent> {
                 padding: EdgeInsets.fromLTRB(paddingLeft, 5, paddingRight, 5),
                 child: TextField(
                   controller: eventPassword,
+                  obscureText: true,
                   decoration: const InputDecoration(
                       labelText: "Event Password",
                       enabledBorder: OutlineInputBorder(

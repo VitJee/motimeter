@@ -84,6 +84,7 @@ class SignUpState extends State<SignUp> {
               padding: EdgeInsets.fromLTRB(paddingLeft, 0, paddingRight, paddingBottom),
               child: TextField(
                 controller: passController,
+                obscureText: true,
                 decoration: const InputDecoration(
                     labelText: "Password",
                     enabledBorder: OutlineInputBorder(
@@ -96,6 +97,7 @@ class SignUpState extends State<SignUp> {
               padding: EdgeInsets.fromLTRB(paddingLeft, 0, paddingRight, paddingBottom),
               child: TextField(
                 controller: confirmPassController,
+                obscureText: true,
                 decoration: const InputDecoration(
                     labelText: "Confirm Password",
                     enabledBorder: OutlineInputBorder(

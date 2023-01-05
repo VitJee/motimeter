@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:motimeter/alleventsController.dart';
 import 'package:motimeter/redirects.dart';
 import 'package:motimeter/userController.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class AllEvents extends StatefulWidget {
   const AllEvents({super.key});
@@ -17,9 +21,12 @@ class AllEventsState extends State<AllEvents> {
   final double paddingRight = 50;
   final double paddingTop = 50;
   final double paddingBottom = 10;
+  bool switchMode = false;
+  late final img;
 
   @override
   initState() {
+    img = getPicture("bruh");
     setState(() {});
     super.initState();
   }
@@ -32,6 +39,105 @@ class AllEventsState extends State<AllEvents> {
     }
   }
 
+  commentWidget(context, String eventKey, DateTime eventStart, DateTime eventEnd) {
+    if (DateTime.now().isAfter(eventStart)) {
+      return ElevatedButton(
+        onPressed: () {
+          if (DateTime.now().isAfter(eventEnd)) {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return const AlertDialog(
+                  title: Text("This event is over."),
+                );
+              },
+            );
+            setState(() {});
+          } else {
+            showDialog(
+              context: context,
+              builder: (context) {
+                TextEditingController comment = TextEditingController();
+                double rating = 0;
+                return StatefulBuilder(
+                  builder: (context, setState) {
+                    return AlertDialog(
+                      title: const Text("Comment/Mood"),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextField(
+                            controller: comment,
+                            decoration: const InputDecoration(labelText: "Comment"),
+                          ),
+                          Slider(
+                            min: -10,
+                            max: 10,
+                            value: rating,
+                            onChanged: (double value) {
+                              setState(() {
+                                rating = value;
+                              });
+                            },
+                            divisions: 20,
+                          ),
+                          Text(rating.toString())
+                        ],
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            if (comment.text.isNotEmpty) {
+                              AllEventsController.addComment(eventKey, comment.text);
+                              Navigator.pop(context);
+                            }
+                          },
+                          child: const Text("Comment"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            AllEventsController.addMood(eventKey, rating.toInt());
+                            Navigator.pop(context);
+                          },
+                          child: const Text("Mood"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text("Cancel", style: TextStyle(color: Colors.red)),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            );
+          }
+        },
+        child: const Text("Comment/Mood"),
+      );
+    } else {
+      return const ElevatedButton(
+        onPressed: null,
+        child: Text("Comment/Mood"),
+      );
+    }
+  }
+
+  finishedWidget(context, List<dynamic> moods, List<dynamic> comments, String eventName) {
+    return ElevatedButton(
+      onPressed: () {
+        Redirects.details(context, comments, moods, eventName);
+      },
+      child: const Text("Finished"),
+    );
+  }
+
+  getPicture(String eventImgId) async {
+    return await FirebaseStorage.instance.ref("pictures/$eventImgId").getDownloadURL();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,48 +148,91 @@ class AllEventsState extends State<AllEvents> {
         child: const Icon(Icons.add),
       ),
       appBar: AppBar(
-          title: const Text("Motimeter - All Events"),
-          centerTitle: true,
-          actions: [
-            PopupMenuButton<int>(
-                onSelected: (item) => onSelected(context, item),
-                itemBuilder: (context) => [
-                  const PopupMenuItem<int>(
-                      value: 0,
-                      child: Text("Sign-out")
-                  ),
-                ]
-            )
-          ],
+        title: switchMode == false ? const Text("Motimeter - Events") : const Text("Motimeter - Archive"),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {setState(() {});},
+            tooltip: "Refresh",
+            icon: const Icon(Icons.refresh),
+          ),
+          const SizedBox(width: 15),
+          IconButton(
+            onPressed: () {
+              setState(() {
+                switchMode = !switchMode;
+              });
+            },
+            tooltip: switchMode == true ? "Events" : "Archive",
+            icon: switchMode == true ? const Icon(Icons.event) : const Icon(Icons.archive_outlined),
+          ),
+          const SizedBox(width: 15),
+          IconButton(
+            onPressed: () {
+              FirebaseAuth.instance.signOut();
+              Redirects.signIn(context);
+            },
+            tooltip: "Sign-out",
+            icon: const Icon(Icons.exit_to_app),
+          ),
+          const SizedBox(width: 15),
+        ],
       ),
       body: Center(
         child: FirebaseAnimatedList(
           query: AllEventsController.readAllEvents(),
           itemBuilder: (context, snapshot, animation, index) {
-            var alreadyJoined = false;
-            late List<dynamic> members = snapshot.child("members").value as List<dynamic>;
-            if (snapshot != null) {
-              for (var member in members) {
-                if (member.toString() == FirebaseAuth.instance.currentUser!.email.toString()) {
-                  alreadyJoined = true;
+            var eventKey = snapshot.key.toString();
+            var eventStart = DateTime.parse(snapshot.child("start").value.toString());
+            var eventEnd = DateTime.parse(snapshot.child("end").value.toString());
+            var eventName = snapshot.child("name").value.toString();
+            var eventPassword = snapshot.child("password").value.toString();
+            var eventImgId = snapshot.child("imgid").value.toString();
+            var comments = snapshot.child("comments").value as List<dynamic>;
+            var moods = snapshot.child("moods").value as List<dynamic>;
+            List<dynamic> members = snapshot.child("members").value as List<dynamic>;
+
+            print(img);
+
+            if (!switchMode) {
+              if (DateTime.now().isBefore(eventEnd)) {
+                if (members.contains(FirebaseAuth.instance.currentUser!.email.toString())) {
+                  return Card(
+                    elevation: 5,
+                    child: ListTile(
+                      leading: /*img != null ? Image.network(getPicture(eventImgId)) :*/ const Icon(Icons.event),
+                      title: Text(snapshot.child("name").value.toString()),
+                      subtitle: Text("From ${snapshot.child("start").value.toString()} till ${snapshot.child("end").value.toString()} avg. mood: ${AllEventsController.avgMood(snapshot.child("moods").value as List<dynamic>)}"),
+                      trailing: commentWidget(context, eventKey, eventStart, eventEnd),
+                    ),
+                  );
+                } else {
+                  return Card(
+                    elevation: 5,
+                    child: ListTile(
+                      title: Text(snapshot.child("name").value.toString()),
+                      subtitle: Text("From ${snapshot.child("start").value.toString()} till ${snapshot.child("end").value.toString()} avg. mood: ${AllEventsController.avgMood(snapshot.child("moods").value as List<dynamic>)}"),
+                      trailing: AllEventsController.joinWidget(context, eventKey, eventName, eventPassword),
+                    ),
+                  );
                 }
+              } else {
+                return const SizedBox.shrink();
+              }
+            } else {
+              if (DateTime.now().isAfter(eventEnd)) {
+                return Card(
+                  elevation: 5,
+                  child: ListTile(
+                    title: Text(snapshot.child("name").value.toString()),
+                    subtitle: Text("From ${snapshot.child("start").value.toString()} till ${snapshot.child("end").value.toString()} avg. mood: ${AllEventsController.avgMood(snapshot.child("moods").value as List<dynamic>)}"),
+                    trailing: finishedWidget(context, moods, comments, eventName),
+                  ),
+                );
+              } else {
+                return const SizedBox.shrink();
               }
             }
-            return Card(
-              elevation: 5,
-              child: ListTile(
-                leading: const Icon(Icons.event),
-                title: Text(snapshot.child("name").value.toString()),
-                trailing: alreadyJoined == true 
-                    ? AllEventsController.detailWidget(context, snapshot.key.toString())
-                    : AllEventsController.joinWidget(
-                  context,
-                  snapshot.key.toString(),
-                  snapshot.child("name").value.toString(),
-                  snapshot.child("password").value.toString()
-                ),
-              ),
-            );
           },
         )
       ),

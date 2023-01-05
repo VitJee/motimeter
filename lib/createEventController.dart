@@ -23,39 +23,39 @@ class CreateEventController {
 
     switch (startOrEnd) {
       case true:
-        final newDate = DateTime(
+        var newDate = DateTime(
             date.year,
             date.month,
             date.day,
             time.hour,
             time.minute
         );
-        if (newDate.isAtSameMomentAs(CreateEventState.endDateTime) ||
-            newDate.isBefore(DateTime.now())) {
-          CreateEventState.message = "Your start date must be after now and before the end date!";
-          return;
+        if (newDate.isBefore(DateTime.now())) {
+          newDate = DateTime.now();
+          if (CreateEventState.endDateTime.isBefore(newDate)) {
+            CreateEventState.endDateTime = newDate;
+          }
+          CreateEventState.message = "You can't start an event in the past!";
         } else if (newDate.isAfter(CreateEventState.endDateTime)) {
-          CreateEventState.startDateTime = newDate;
           CreateEventState.endDateTime = newDate;
+          CreateEventState.message = "Your end date must be after your start date!";
+        } else {
           CreateEventState.message = "";
         }
         CreateEventState.startDateTime = newDate;
         break;
       case false:
-        final newDate = DateTime(
+        var newDate = DateTime(
             date.year,
             date.month,
             date.day,
             time.hour,
             time.minute
         );
-        if (newDate.isAtSameMomentAs(CreateEventState.startDateTime) ||
-            newDate.isBefore(DateTime.now())) {
-          CreateEventState.message = "Your end date must be after now and after the start date!";
+        if (newDate.isBefore(CreateEventState.startDateTime)) {
+          CreateEventState.message = "Your end date must be after the start date!";
           return;
-        } else if (newDate.isBefore(CreateEventState.startDateTime)) {
-          CreateEventState.startDateTime = newDate;
-          CreateEventState.endDateTime = newDate;
+        } else {
           CreateEventState.message = "";
         }
         CreateEventState.endDateTime = newDate;
@@ -76,19 +76,23 @@ class CreateEventController {
   );
 
   static createEvent(context, host, eventName, eventPassword, eventStart, eventEnd) async {
+    DateTime start = DateTime.parse(eventStart);
+    if (start.isBefore(DateTime.now().subtract(const Duration(seconds: 1)))) start = DateTime.now();
     try {
       DatabaseReference db = FirebaseDatabase.instanceFor(
         app: Firebase.app(),
-        databaseURL: "https://motimeter-98640-default-rtdb.europe-west1.firebasedatabase.app/"
+        databaseURL: dbURL
       ).ref("events").push();
       db.set({
         "host": host,
         "name": eventName,
         "password": eventPassword,
-        "start": eventStart,
+        "start": start.toString(),
         "end": eventEnd,
         "imgid": await createImgId(),
         "members": [host],
+        "moods": ["0:0"],
+        "comments": [""]
       });
       uploadFile();
       Redirects.allEvents(context);
@@ -129,7 +133,7 @@ class CreateEventController {
     FirebaseStorage storage = FirebaseStorage.instance;
     if (CreateEventState.image == null) return;
     try {
-      await storage.ref("pictures/bruh").putFile(CreateEventState.image!);
+      await storage.ref("pictures/bruh.jpg").putFile(CreateEventState.image!);
     } on FirebaseException catch (e) {
       print(e.message.toString());
     }

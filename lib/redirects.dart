@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:motimeter/allevents.dart';
+import 'package:motimeter/details.dart';
 import 'package:motimeter/createEvent.dart';
 import 'package:motimeter/signin.dart';
 import 'package:motimeter/signup.dart';
-
-import 'detail.dart';
 
 class Redirects {
   static void signIn(context) {
@@ -31,9 +30,9 @@ class Redirects {
     }));
   }
 
-  static void details(context, String eventKey) {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) {
-      return Detail(eventKey: eventKey);
+  static void details(context, List<dynamic> comments, List<dynamic> ratings, String eventName) {
+    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+      return Details(comments: comments, ratings: ratings, eventName: eventName);
     }));
   }
 }

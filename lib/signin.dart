@@ -82,6 +82,7 @@ class SignInPageState extends State<SignInPage> {
               padding: EdgeInsets.fromLTRB(paddingLeft, 0, paddingRight, paddingBottom),
               child: TextField(
                 controller: passController,
+                obscureText: true,
                 decoration: const InputDecoration(
                     labelText: "Password",
                     enabledBorder: OutlineInputBorder(
