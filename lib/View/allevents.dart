@@ -82,7 +82,7 @@ class AllEventsState extends State<AllEvents> {
                         TextButton(
                           onPressed: () {
                             if (comment.text.isNotEmpty) {
-                              AllEventsController.addComment(eventKey, comment.text);
+                              AllEventsController.addComment(eventKey, comment.text, currentEmail);
                               Navigator.pop(context);
                             }
                           },
@@ -90,7 +90,7 @@ class AllEventsState extends State<AllEvents> {
                         ),
                         TextButton(
                           onPressed: () {
-                            AllEventsController.addMood(eventKey, rating.toInt());
+                            AllEventsController.addMood(eventKey, rating.toInt(), currentEmail);
                             Navigator.pop(context);
                           },
                           child: const Text("Mood"),
@@ -211,7 +211,7 @@ class AllEventsState extends State<AllEvents> {
                       leading: /*img != null ? Image.network(getPicture(eventImgId)) :*/ const Icon(Icons.event),
                       title: Text(snapshot.child("name").value.toString()),
                       subtitle: Text("From ${snapshot.child("start").value.toString()} till ${snapshot.child("end").value.toString()} avg. mood: ${AllEventsController.avgMood(snapshot.child("moods").value as List<dynamic>)}"),
-                      trailing: AllEventsController.joinWidget(context, eventKey, eventName, eventPassword),
+                      trailing: AllEventsController.joinWidget(context, eventKey, eventName, eventPassword, currentEmail),
                     ),
                   );
                 }

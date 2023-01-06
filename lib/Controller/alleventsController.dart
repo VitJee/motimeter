@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
@@ -41,7 +40,7 @@ class AllEventsController {
     return avgMood;
   }
 
-  static joinEvent(String eventKey) async {
+  static joinEvent(String eventKey, String currentEmail) async {
     late List<dynamic> members = [];
     var membersRef = await FirebaseDatabase.instanceFor(
         app: Firebase.app(),
@@ -50,13 +49,13 @@ class AllEventsController {
     await membersRef.child("members").get().then((snapshot) => {
       members = snapshot.value as List<dynamic>
     });
-    members.add(FirebaseAuth.instance.currentUser!.email);
+    members.add(currentEmail);
     await membersRef.update({
       "members": members
     });
   }
 
-  static addComment(String eventKey, String comment) async {
+  static addComment(String eventKey, String comment, String currentEmail) async {
     List<dynamic> comments = [];
     var membersRef = await FirebaseDatabase.instanceFor(
         app: Firebase.app(),
@@ -65,7 +64,7 @@ class AllEventsController {
     await membersRef.child("comments").get().then((snapshot) => {
       comments = snapshot.value as List<dynamic>
     });
-    comments.add("${FirebaseAuth.instance.currentUser!.email}:$comment");
+    comments.add("$currentEmail:$comment");
     if (comments[0] == "") {
       comments.removeAt(0);
     }
@@ -74,7 +73,7 @@ class AllEventsController {
     });
   }
 
-  static addMood(String eventKey, int moods) async {
+  static addMood(String eventKey, int moods, String currentEmail) async {
     late List<dynamic> ratings = [];
     var membersRef = await FirebaseDatabase.instanceFor(
         app: Firebase.app(),
@@ -83,7 +82,7 @@ class AllEventsController {
     await membersRef.child("moods").get().then((snapshot) => {
       ratings = snapshot.value as List<dynamic>
     });
-    ratings.add("${FirebaseAuth.instance.currentUser!.email.toString()}:$moods");
+    ratings.add("$currentEmail:$moods");
     if (ratings[0] == "-100") {
       ratings.removeAt(0);
     }
@@ -92,7 +91,7 @@ class AllEventsController {
     });
   }
 
-  static joinWidget(context, String eventKey, String eventName, String eventPassword) {
+  static joinWidget(context, String eventKey, String eventName, String eventPassword, String currentEmail) {
     TextEditingController passController = TextEditingController();
     return ElevatedButton(
       onPressed: () {
@@ -121,7 +120,7 @@ class AllEventsController {
                           setState(() {
                             message = "";
                           });
-                          joinEvent(eventKey);
+                          joinEvent(eventKey, currentEmail);
                           Navigator.pop(context);
                         } else {
                           setState(() {
