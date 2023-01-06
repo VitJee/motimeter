@@ -12,7 +12,7 @@ class UserController {
           email: email.trim(),
           password: password.trim()
       );
-      Redirects.allEvents(context);
+      Redirects.allEvents(context, email);
       SignInPageState.message = "";
     } on FirebaseAuthException catch (e) {
       SignInPageState.message = e.message.toString();
@@ -25,7 +25,7 @@ class UserController {
           email: email.trim(),
           password: password
       );
-      Redirects.allEvents(context);
+      Redirects.allEvents(context, email);
       SignUpState.message = "";
     } on FirebaseAuthException catch (e) {
       SignUpState.message = e.message.toString();

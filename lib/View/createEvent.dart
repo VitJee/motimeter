@@ -1,17 +1,21 @@
 import 'dart:io';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:motimeter/Controller/createEventController.dart';
 import 'package:motimeter/Controller/redirects.dart';
 
 class CreateEvent extends StatefulWidget {
+  const CreateEvent({required this.currentEmail});
+  final String currentEmail;
+
   @override
-  State<StatefulWidget> createState() => CreateEventState();
+  State<StatefulWidget> createState() => CreateEventState(currentEmail: currentEmail);
 }
 
 class CreateEventState extends State<CreateEvent> {
+  CreateEventState({required this.currentEmail});
+  final String currentEmail;
   final double paddingLeft = 50;
   final double paddingRight = 50;
   final double paddingTop = 50;
@@ -53,11 +57,12 @@ class CreateEventState extends State<CreateEvent> {
         if (eventPassword.text.length > 5) {
           CreateEventController.createEvent(
               context,
-              FirebaseAuth.instance.currentUser?.email,
+              currentEmail,
               eventName.text,
               eventPassword.text,
               startDateTime.toString(),
-              endDateTime.toString());
+              endDateTime.toString(),
+              currentEmail);
         } else {
           message = "Your password needs to be atleast 6 characters long!";
         }
@@ -77,7 +82,7 @@ class CreateEventState extends State<CreateEvent> {
       appBar: AppBar(
         leading: BackButton(
           onPressed: () {
-            Redirects.allEvents(context);
+            Redirects.allEvents(context, currentEmail);
           },
         ),
         title: const Text("Motimeter - Create Event"),

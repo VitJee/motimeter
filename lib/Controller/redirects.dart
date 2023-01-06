@@ -18,15 +18,15 @@ class Redirects {
     }));
   }
 
-  static void allEvents(context) {
+  static void allEvents(context, String currentEmail) {
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) {
-      return AllEvents();
+      return AllEvents(currentEmail: currentEmail);
     }));
   }
 
-  static void createEvent(context) {
+  static void createEvent(context, String currentEmail) {
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) {
-      return CreateEvent();
+      return CreateEvent(currentEmail: currentEmail);
     }));
   }
 

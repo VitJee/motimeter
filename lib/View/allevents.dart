@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -10,19 +9,22 @@ import 'package:motimeter/Controller/userController.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class AllEvents extends StatefulWidget {
-  const AllEvents({super.key});
+  const AllEvents({super.key, required this.currentEmail});
+  final String currentEmail;
 
   @override
-  State<AllEvents> createState() => AllEventsState();
+  State<AllEvents> createState() => AllEventsState(currentEmail: currentEmail);
 }
 
 class AllEventsState extends State<AllEvents> {
+  AllEventsState({required this.currentEmail});
   final double paddingLeft = 50;
   final double paddingRight = 50;
   final double paddingTop = 50;
   final double paddingBottom = 10;
   bool switchMode = false;
   late final img;
+  final String currentEmail;
 
   @override
   initState() {
@@ -164,7 +166,7 @@ class AllEventsState extends State<AllEvents> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Redirects.createEvent(context);
+          Redirects.createEvent(context, currentEmail);
         },
         child: const Icon(Icons.add),
       ),
@@ -192,7 +194,7 @@ class AllEventsState extends State<AllEvents> {
 
             if (!switchMode) {
               if (DateTime.now().isBefore(eventEnd)) {
-                if (members.contains(FirebaseAuth.instance.currentUser!.email.toString())) {
+                if (members.contains(currentEmail)) {
                   return Card(
                     elevation: 5,
                     child: ListTile(
@@ -218,7 +220,7 @@ class AllEventsState extends State<AllEvents> {
               }
             } else {
               if (DateTime.now().isAfter(eventEnd)) {
-                if (members.contains(FirebaseAuth.instance.currentUser?.email.toString())) {
+                if (members.contains(currentEmail)) {
                   return Card(
                     elevation: 5,
                     child: ListTile(

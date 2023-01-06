@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -75,7 +74,7 @@ class CreateEventController {
       initialTime: TimeOfDay(hour: dateTime.hour, minute: dateTime.minute)
   );
 
-  static createEvent(context, host, eventName, eventPassword, eventStart, eventEnd) async {
+  static createEvent(context, host, eventName, eventPassword, eventStart, eventEnd, currentEmail) async {
     DateTime start = DateTime.parse(eventStart);
     if (start.isBefore(DateTime.now().subtract(const Duration(seconds: 1)))) start = DateTime.now();
     try {
@@ -95,8 +94,8 @@ class CreateEventController {
         "comments": [""]
       });
       uploadFile();
-      Redirects.allEvents(context);
-    } on FirebaseAuthException catch (e) {
+      Redirects.allEvents(context, currentEmail);
+    } on FirebaseException catch (e) {
       print(e.message.toString());
     }
   }
