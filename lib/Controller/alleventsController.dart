@@ -49,7 +49,7 @@ class AllEventsController {
     await membersRef.child("members").get().then((snapshot) => {
       members = snapshot.value as List<dynamic>
     });
-    members.add(currentEmail);
+    members = [...members, currentEmail];
     await membersRef.update({
       "members": members
     });
@@ -64,7 +64,7 @@ class AllEventsController {
     await membersRef.child("comments").get().then((snapshot) => {
       comments = snapshot.value as List<dynamic>
     });
-    comments.add("$currentEmail:$comment");
+    comments = [...comments, "$currentEmail:$comment"];
     if (comments[0] == "") {
       comments.removeAt(0);
     }
@@ -82,7 +82,7 @@ class AllEventsController {
     await membersRef.child("moods").get().then((snapshot) => {
       ratings = snapshot.value as List<dynamic>
     });
-    ratings.add("$currentEmail:$moods");
+    ratings = [...ratings, "$currentEmail:$moods"];
     if (ratings[0] == "-100") {
       ratings.removeAt(0);
     }

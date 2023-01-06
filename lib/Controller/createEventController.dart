@@ -88,51 +88,33 @@ class CreateEventController {
         "password": eventPassword,
         "start": start.toString(),
         "end": eventEnd,
-        "imgid": await createImgId(),
+        "imgid": createImgId(),
         "members": [host],
         "moods": ["0:0"],
         "comments": [""]
       });
       uploadFile();
       Redirects.allEvents(context, currentEmail);
+      CreateEventState.image = null;
     } on FirebaseException catch (e) {
       print(e.message.toString());
     }
   }
 
-  static createImgId() async {
-    List<String> imgIds = await searchImgIds();
+  static createImgId() {
     List<String> numbers = "1234567890".split("");
-    String ret;
-    do {
-      ret = "";
-      for (int i = 0; i < 20; i++) {
-        ret += numbers[Random().nextInt(10)];
-      }
-    } while (imgIds.contains(ret));
-    return ret;
-  }
-
-  static searchImgIds() async {
-    late List<DataSnapshot> events = [];
-    List<String> imgIds = [];
-    await FirebaseDatabase.instanceFor(
-        app: Firebase.app(),
-        databaseURL: dbURL
-    ).ref("events").get().then((value) => {
-      events = value.children.toList(),
-    });
-    for (var snapshot in events) {
-      imgIds.add(snapshot.child("imgid").value.toString());
+    String ret = "";
+    for (int i = 0; i < 40; i++) {
+      ret += numbers[Random().nextInt(10)];
     }
-    return imgIds;
+    return ret;
   }
 
   static uploadFile() async {
     FirebaseStorage storage = FirebaseStorage.instance;
     if (CreateEventState.image == null) return;
     try {
-      await storage.ref("pictures/bruh.jpg").putFile(CreateEventState.image!);
+      await storage.ref("pictures/${createImgId()}.jpg").putFile(CreateEventState.image!);
     } on FirebaseException catch (e) {
       print(e.message.toString());
     }
