@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:motimeter/allevents.dart';
-import 'package:motimeter/details.dart';
-import 'package:motimeter/createEvent.dart';
-import 'package:motimeter/signin.dart';
-import 'package:motimeter/signup.dart';
+import 'package:motimeter/View/allevents.dart';
+import 'package:motimeter/View/details.dart';
+import 'package:motimeter/View/createEvent.dart';
+import 'package:motimeter/View/signin.dart';
+import 'package:motimeter/View/signup.dart';
 
 class Redirects {
   static void signIn(context) {

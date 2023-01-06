@@ -4,9 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:motimeter/alleventsController.dart';
-import 'package:motimeter/redirects.dart';
-import 'package:motimeter/userController.dart';
+import 'package:motimeter/Controller/alleventsController.dart';
+import 'package:motimeter/Controller/redirects.dart';
+import 'package:motimeter/Controller/userController.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class AllEvents extends StatefulWidget {

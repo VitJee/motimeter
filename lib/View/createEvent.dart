@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:motimeter/createEventController.dart';
-import 'package:motimeter/redirects.dart';
+import 'package:motimeter/Controller/createEventController.dart';
+import 'package:motimeter/Controller/redirects.dart';
 
 class CreateEvent extends StatefulWidget {
   @override

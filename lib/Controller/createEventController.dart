@@ -8,8 +8,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:motimeter/createEvent.dart';
-import 'package:motimeter/redirects.dart';
+import 'package:motimeter/View/createEvent.dart';
+import 'package:motimeter/Controller/redirects.dart';
 
 class CreateEventController {
   static const dbURL = "https://motimeter-98640-default-rtdb.europe-west1.firebasedatabase.app/";

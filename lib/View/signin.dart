@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:motimeter/allevents.dart';
-import 'package:motimeter/redirects.dart';
-import 'package:motimeter/userController.dart';
-import 'firebase_options.dart';
+import 'package:motimeter/View/allevents.dart';
+import 'package:motimeter/firebase_options.dart';
+import 'package:motimeter/Controller/redirects.dart';
+import 'package:motimeter/Controller/userController.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
