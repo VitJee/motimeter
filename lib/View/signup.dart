@@ -61,7 +61,7 @@ class SignUpState extends State<SignUp> {
           title: const Text("Motimeter"),
           centerTitle: true,
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
           children: [
             Padding(
