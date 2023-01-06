@@ -6,15 +6,16 @@ import 'package:motimeter/signup.dart';
 
 class UserController {
 
-  static signIn(String email, String password) async {
+  static signIn(context, String email, String password) async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email.trim(),
           password: password.trim()
       );
+      Redirects.allEvents(context);
+      SignInPageState.message = "";
     } on FirebaseAuthException catch (e) {
       SignInPageState.message = e.message.toString();
-      SignInPageState.messageColor = Colors.red;
     }
   }
 

@@ -31,14 +31,6 @@ class AllEventsState extends State<AllEvents> {
     super.initState();
   }
 
-  onSelected(BuildContext context, int item) {
-    switch (item) {
-      case 0:
-        UserController.signOut(context);
-        break;
-    }
-  }
-
   commentWidget(context, String eventKey, DateTime eventStart, DateTime eventEnd) {
     if (DateTime.now().isAfter(eventStart)) {
       return ElevatedButton(
@@ -138,6 +130,35 @@ class AllEventsState extends State<AllEvents> {
     return await FirebaseStorage.instance.ref("pictures/$eventImgId").getDownloadURL();
   }
 
+  PopupMenuButton getMenuWidget() {
+    String eventOrArchive = "";
+    if (switchMode == true) {
+      eventOrArchive = "Events";
+    } else {
+      eventOrArchive = "Archive";
+    }
+    return PopupMenuButton(
+      itemBuilder: (context) => [
+        const PopupMenuItem(value: 1, child: Text("Refresh")),
+        PopupMenuItem(value: 2, child: Text(eventOrArchive)),
+        const PopupMenuItem(value: 3, child: Text("Sign-out")),
+      ],
+      onSelected: (value) {
+        switch (value) {
+          case 1:
+            break;
+          case 2:
+            switchMode = !switchMode;
+            break;
+          case 3:
+            Redirects.signIn(context);
+            break;
+        }
+        setState(() {});
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,30 +172,7 @@ class AllEventsState extends State<AllEvents> {
         title: switchMode == false ? const Text("Motimeter - Events") : const Text("Motimeter - Archive"),
         centerTitle: true,
         actions: [
-          IconButton(
-            onPressed: () {setState(() {});},
-            tooltip: "Refresh",
-            icon: const Icon(Icons.refresh),
-          ),
-          const SizedBox(width: 15),
-          IconButton(
-            onPressed: () {
-              setState(() {
-                switchMode = !switchMode;
-              });
-            },
-            tooltip: switchMode == true ? "Events" : "Archive",
-            icon: switchMode == true ? const Icon(Icons.event) : const Icon(Icons.archive_outlined),
-          ),
-          const SizedBox(width: 15),
-          IconButton(
-            onPressed: () {
-              FirebaseAuth.instance.signOut();
-              Redirects.signIn(context);
-            },
-            tooltip: "Sign-out",
-            icon: const Icon(Icons.exit_to_app),
-          ),
+          getMenuWidget(),
           const SizedBox(width: 15),
         ],
       ),
@@ -192,8 +190,6 @@ class AllEventsState extends State<AllEvents> {
             var moods = snapshot.child("moods").value as List<dynamic>;
             List<dynamic> members = snapshot.child("members").value as List<dynamic>;
 
-            print(img);
-
             if (!switchMode) {
               if (DateTime.now().isBefore(eventEnd)) {
                 if (members.contains(FirebaseAuth.instance.currentUser!.email.toString())) {
@@ -210,6 +206,7 @@ class AllEventsState extends State<AllEvents> {
                   return Card(
                     elevation: 5,
                     child: ListTile(
+                      leading: /*img != null ? Image.network(getPicture(eventImgId)) :*/ const Icon(Icons.event),
                       title: Text(snapshot.child("name").value.toString()),
                       subtitle: Text("From ${snapshot.child("start").value.toString()} till ${snapshot.child("end").value.toString()} avg. mood: ${AllEventsController.avgMood(snapshot.child("moods").value as List<dynamic>)}"),
                       trailing: AllEventsController.joinWidget(context, eventKey, eventName, eventPassword),
@@ -221,20 +218,24 @@ class AllEventsState extends State<AllEvents> {
               }
             } else {
               if (DateTime.now().isAfter(eventEnd)) {
-                return Card(
-                  elevation: 5,
-                  child: ListTile(
-                    title: Text(snapshot.child("name").value.toString()),
-                    subtitle: Text("From ${snapshot.child("start").value.toString()} till ${snapshot.child("end").value.toString()} avg. mood: ${AllEventsController.avgMood(snapshot.child("moods").value as List<dynamic>)}"),
-                    trailing: finishedWidget(context, moods, comments, eventName),
-                  ),
-                );
+                if (members.contains(FirebaseAuth.instance.currentUser?.email.toString())) {
+                  return Card(
+                    elevation: 5,
+                    child: ListTile(
+                      leading: /*img != null ? Image.network(getPicture(eventImgId)) :*/ const Icon(Icons.event),
+                      title: Text(snapshot.child("name").value.toString()),
+                      subtitle: Text("From ${snapshot.child("start").value.toString()} till ${snapshot.child("end").value.toString()} avg. mood: ${AllEventsController.avgMood(snapshot.child("moods").value as List<dynamic>)}"),
+                      trailing: finishedWidget(context, moods, comments, eventName),
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
               } else {
                 return const SizedBox.shrink();
               }
             }
           },
-        )
+        ),
       ),
     );
   }

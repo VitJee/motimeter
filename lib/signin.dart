@@ -18,19 +18,7 @@ class SignIn extends StatelessWidget {
   SignIn({super.key});
 
   @override
-  Widget build(BuildContext context) =>
-      Scaffold(
-        body: StreamBuilder<User?>(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return AllEvents();
-            } else {
-              return SignInPage();
-            }
-          },
-        ),
-      );
+  Widget build(BuildContext context) => SignInPage();
 }
 
 class SignInPage extends StatefulWidget {
@@ -46,7 +34,6 @@ class SignInPageState extends State<SignInPage> {
   final double paddingTop = 50;
   final double paddingBottom = 10;
   static String message = "";
-  static Color messageColor = Colors.red;
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
@@ -100,7 +87,7 @@ class SignInPageState extends State<SignInPage> {
                       padding: const EdgeInsets.only(right: 5),
                       child: ElevatedButton(
                         onPressed: () async {
-                          await UserController.signIn(emailController.text, passController.text);
+                          await UserController.signIn(context, emailController.text, passController.text);
                           setState(() {});
                         },
                         child: const Text("Sign-in"),
@@ -116,7 +103,7 @@ class SignInPageState extends State<SignInPage> {
                 ],
               )
             ),
-            Text(message, style: TextStyle(color: messageColor)),
+            Text(message, style: const TextStyle(color: Colors.red)),
           ],
         ),
       ),
