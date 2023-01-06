@@ -80,7 +80,7 @@ class CreateEventState extends State<CreateEvent> {
             Redirects.allEvents(context);
           },
         ),
-        title: const Text("Motimeter - Create Group"),
+        title: const Text("Motimeter - Create Event"),
         centerTitle: true,
       ),
       body: SingleChildScrollView(

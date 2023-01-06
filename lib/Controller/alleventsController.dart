@@ -33,11 +33,11 @@ class AllEventsController {
       List<String> strSplit = str.toString().split(":");
       moodValues.add(int.parse(strSplit[1]));
     }
-    for (int index = 0; index < moodValues.length; index++) {
+    for (int index = 1; index < moodValues.length; index++) {
       avgMood += moodValues[index];
     }
     if (avgMood == 0) return 0;
-    avgMood = avgMood / moodValues.length;
+    avgMood = avgMood / (moodValues.length - 1);
     return avgMood;
   }
 
