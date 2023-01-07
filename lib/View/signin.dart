@@ -7,18 +7,6 @@ import 'package:motimeter/firebase_options.dart';
 import 'package:motimeter/Controller/redirects.dart';
 import 'package:motimeter/Controller/userController.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp(MaterialApp(home: SignIn(), debugShowCheckedModeBanner: false));
-}
-
 class SignIn extends StatelessWidget {
   SignIn({super.key});
 
